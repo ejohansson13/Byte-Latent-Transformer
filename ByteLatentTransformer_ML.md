@@ -36,9 +36,17 @@ Rather than employing a global entropy threshold, a second approach utilized a r
 
 # Architecture
 
-## Local Encoder
-
 ### Embeddings
+
+Text needs to be projected to a vector space to propagate through a neural network. Tokenization-based models achieve this trivially, mapping tokens 1:1 with a vector embedding. Operating at the byte level required a new approach. Researchers designed hash n-gram embeddings. As a first step, this required each individual byte to be embedded. Next, the byte-grams were created where, for each individual byte, the preceding n-bytes were collected, with n ranging from three to eight. 
+
+Each n-gram was mapped to an index in a fixed-size embedding table via the Rolling Polynomial Hashing function, with embedding tables corresponding to the n-gram length. Given the vector embedding of the singular byte and the hash embeddings for its corresponding n-grams, the augmented embedding, serving as input to the local encoder, could be calculated as the sum of the byte embedding with each hashed n-gram embedding. This summation is illustrated below.
+
+Image here.
+
+Operating at the byte-level, hash n-gram embeddings embed individual bytes before summing the vector embeddings corresponding to their hashed n-gram complements, encoding contextual information into each augmented embedding.
+
+## Local Encoder
 
 ## Global Latent Transformer
 
