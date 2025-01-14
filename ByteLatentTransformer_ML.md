@@ -42,11 +42,35 @@ Text needs to be projected to a vector space to propagate through a neural netwo
 
 Each n-gram was mapped to an index in a fixed-size embedding table via the Rolling Polynomial Hashing function, with embedding tables corresponding to the n-gram length. Given the vector embedding of the singular byte and the hash embeddings for its corresponding n-grams, the augmented embedding, serving as input to the local encoder, could be calculated as the sum of the byte embedding with each hashed n-gram embedding. This summation is illustrated below.
 
-Image here.
+<p align="center" width="100%">
+  <img src="/Images/augmented_embedding_summation.png" width="100%"
+</p>
 
 Operating at the byte-level, hash n-gram embeddings embed individual bytes before summing the vector embeddings corresponding to their hashed n-gram complements, encoding contextual information into each augmented embedding.
 
 ## Local Encoder
+
+<p align="center" width="100%">
+  <img src="/Images/local_encoder_diagram.png" width="90%"
+</p>
+
+The local encoder consists of stacks of alternating Transformer and cross-attention layers. The Transformer layers attend to the byte embeddings, self-attending up to the current byte position. Cross-attention infuses the patch representations with information from the byte embeddings by employing the patch representations as query vectors, while the self-attended byte embeddings serve as the key and value vectors.
+
+Patches are computed as a pre-processing operation occurring during dataloading. They serve as placeholders, denoting boundaries between bytes, iteratively distilling information from the byte embeddings during steps through the local encoder. They operate on, and up to, the bytes within their boundaries. However, since the augmented byte embeddings contain preceding information via their hash n-gram embeddings, patches receive implicit contextual information crossing patch boundaries.
+
+The augmented byte embeddings propagate through the Transformer layers, refining their information through the attention mechanism. This information is repetitively passed on to the patch representations which serve as the hidden states in the diagram at the beginning of [this section](#local-encoder). After propagating through all of the layers in the local encoder, the final layer’s output serves as the latent patches input to the global latent transformer.
+
+The specific architecture for the Transformer layer can be seen below, a pipeline of normalization, self-attention, normalization, and the feed-forward network utilizing the [SwiGLU](https://arxiv.org/pdf/2002.05202) activation function. 
+
+<p align="center" width="100%">
+  <img src="/Images/transformer_layer.png" width="90%"
+</p>
+
+If you’re not familiar, the feed-forward network with the SwiGLU gated linear unit activation function is illustrated below. It’s a compilation of linear operations, projecting the byte embeddings to a higher dimension, one of those projections proceeding through a [Sigmoid Linear Unit](https://arxiv.org/pdf/1606.08415) before the two paths are summed, and the result is projected back down to the original dimension through another linear operation.
+
+<p align="center" width="100%">
+  <img src="/Images/FFN_SwiGLU.png" width="90%"
+</p>
 
 ## Global Latent Transformer
 
