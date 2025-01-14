@@ -43,7 +43,7 @@ Text needs to be projected to a vector space to propagate through a neural netwo
 Each n-gram was mapped to an index in a fixed-size embedding table via the Rolling Polynomial Hashing function, with embedding tables corresponding to the n-gram length. Given the vector embedding of the singular byte and the hash embeddings for its corresponding n-grams, the augmented embedding, serving as input to the local encoder, could be calculated as the sum of the byte embedding with each hashed n-gram embedding. This summation is illustrated below.
 
 <p align="center" width="100%">
-  <img src="/Images/augmented_embedding_summation.png" width="100%"
+  <img src="/Images/augmented_embedding_summation.png" width="60%"
 </p>
 
 Operating at the byte-level, hash n-gram embeddings embed individual bytes before summing the vector embeddings corresponding to their hashed n-gram complements, encoding contextual information into each augmented embedding.
@@ -63,16 +63,22 @@ The augmented byte embeddings propagate through the Transformer layers, refining
 The specific architecture for the Transformer layer can be seen below, a pipeline of normalization, self-attention, normalization, and the feed-forward network utilizing the [SwiGLU](https://arxiv.org/pdf/2002.05202) activation function. 
 
 <p align="center" width="100%">
-  <img src="/Images/transformer_layer.png" width="90%"
+  <img src="/Images/transformer_layer.png" width="80%"
 </p>
 
 If you’re not familiar, the feed-forward network with the SwiGLU gated linear unit activation function is illustrated below. It’s a compilation of linear operations, projecting the byte embeddings to a higher dimension, one of those projections proceeding through a [Sigmoid Linear Unit](https://arxiv.org/pdf/1606.08415) before the two paths are summed, and the result is projected back down to the original dimension through another linear operation.
 
 <p align="center" width="100%">
-  <img src="/Images/FFN_SwiGLU.png" width="90%"
+  <img src="/Images/FFN_SwiGLU.png" width="60%"
 </p>
 
 ## Global Latent Transformer
+
+<p align="center" width="100%">
+  <img src="/Images/global_transformer_diagram.png" width="90%"
+</p>
+
+Words here.
 
 ## Local Decoder
 
