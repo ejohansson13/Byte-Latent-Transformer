@@ -78,8 +78,14 @@ If you’re not familiar, the feed-forward network with the SwiGLU gated linear 
   <img src="/Images/global_transformer_diagram.png" width="90%"
 </p>
 
-Words here.
+The global latent transformer is solely composed of the Transformer layers described in the section above, albeit significantly more. The global latent transformer operates classically on the latent patches, taking the encoded patches from the encoder and autoregressively generating the next patch with block-causal attention masking anything beyond the current patch. Self-attention enhances the global transformer’s understanding of the propagated patches, ensuring capable reasoning and next-patch generation. 
 
 ## Local Decoder
+
+<p align="center" width="100%">
+  <img src="/Images/local_decoder_diagram.png" width="80%"
+</p>
+
+
 
 ##### Thoughts here or on separate page
