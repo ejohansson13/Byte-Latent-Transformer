@@ -86,6 +86,8 @@ The global latent transformer is solely composed of the Transformer layers descr
   <img src="/Images/local_decoder_diagram.png" width="80%"
 </p>
 
+The local decoder is an inversion of the local encoder, responsible for converting the global patch output of the latent transformer to byte-level information. It accomplishes this by reversing the architectural order of the local encoder with cross-attention layers followed by a Transformer layer in each decoder level. 
 
+It receives two inputs: the global patches from the latent Transformer and the byte embeddings of the local encoder’s last layer. As its responsibility is the inverse of the local encoder, it also reverses the positions of the cross-attention vectors. The byte embeddings now serve as the query vectors, with the patch representations serving as the key and value vectors. Purposefully distilling information from the patches to the byte embeddings, each cross-attention layer infuses the byte embeddings with more information from the latent transformer.
 
-##### Thoughts here or on separate page
+These embeddings are further refined through each Transformer layer in the decoder stack, attending up to and including the current byte. Operating on the same principle of iterative information transfer, the byte representations continually ingest information from their patch counterparts in cross attention and emphasize it in the subsequent Transformer layer.
